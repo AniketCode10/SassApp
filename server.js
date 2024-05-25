@@ -2,21 +2,26 @@ require("dotenv").config({path:"./config.env"});
 
 const express = require("express");
 const cors = require("cors");
-const bodyparser = require("body-parser");
+const bodyParser = require("body-parser");
 const connectDB = require("./Db/ConnectDB");
+const errorHandler = require("./middlewares/error.js");
 
 
 const app = express();
 
-app.use(bodyparser.urlencoded({extended:true}));
+app.use(cors())
 
-app.use(cors());
+app.use(bodyParser.urlencoded({extended:true}));
 
+app.use(express.json());
 
-const PORT = process.env.PORT || 4242;
+connectDB();
 
-app.listen(()=>{
+app.use("/api/auth",require("./routes/auth"))
+app.use(errorHandler);
+const PORT = process.env.PORT || 4000
+
+app.listen(PORT,()=>{
     console.log(`Server is running on ${PORT}`);
 })
 
-connectDB();
